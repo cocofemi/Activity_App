@@ -1,0 +1,51 @@
+{% load relationship_tags %}
+
+    <div class="d-none d-lg-block mb-4">
+  		<div class="card text-center">
+  			<div class="card-body">
+  				<img class="rounded article-img" src="{{ request.user.profile.image.url }}">
+    			<h6 class="card-title mt-2 text-muted">{{request.user.profile.first_name}} {{request.user.profile.last_name}}<BR>
+    				<span><a href="{% url 'post:user-posts' request.user.username %}">@{{request.user.username}}</a></span>
+    			</h6>
+    			<hr>
+    			<p class="card-text">{{ request.user.profile.bio | truncatewords:20}}</p>
+    			<hr>
+    			<div class="row justify-content-between">
+    				<div class="ml-4">
+    					<a href="{% url 'post:user-posts' user.username %}"><span class="badge badge-primary badge-pill">{{ posts_count }}</span><BR><span class="text-muted">Posts</span></a>
+    				</div>
+    				<div>
+    					<a href="{% url 'relationship:followers-list' user.username %}"><span class="badge badge-primary badge-pill">{{ followers_count }}</span><BR><span class="text-muted">Followers</span></a>
+    				</div>
+    				<div>
+    					<a href="{% url 'relationship:following-list' user.username %}"><span class="badge badge-primary badge-pill">{{ following_count }}</span><BR><span class="text-muted">Following</span></a>
+    				</div>
+    			</div>
+  			</div>
+		</div>
+	</div>
+<div class="d-none d-lg-block mb-4">
+	<ul class="d-none d-lg-block list-group">
+	    <li class="list-group-item"><h6>New users</h6></li>
+  	</ul>
+  	{% friends_for_user user as friend_dict %}
+		{% for user in users %}
+			{% dict_entry_for_item user.username from friend_dict as friend %}
+				<ul class="d-none d-lg-block list-group-item">
+			    	<div class="d-flex w-100">
+			      		<img class="rounded-circle newusers-img" src="{{ user.profile.image.url }}">
+			      		<h6><a href="{% url 'post:user-posts' user.username %}">{{ user.username }}</a></h6>
+			      		{% if user != request.user %}
+			      			<form method="POST" action="{% if friend %}{% url 'relationship:unfollow_user' user.username %} {% else %} {% url 'relationship:follow_user' user.username %} {% endif %}" style="margin-left: auto";>
+							{% csrf_token %}
+                    		<button class="btn btn-outline-primary btn-sm" >{% if friend %}Unfollow{% else %}Follow{% endif %}</button>
+                			</form>
+			      			<!-- <button type="button" class="newusers-btn btn btn-outline-primary btn-sm">Follow</button> -->
+			      		{% endif %}
+			    	</div>
+		  		</ul>
+		{% endfor %}
+	<ul class="list-group">
+	    <li class="list-group-item"><a href="{% url 'relationship:user-list' %}">View more...</a></li>
+  	</ul>
+ </div>

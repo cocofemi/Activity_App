@@ -1,0 +1,34 @@
+{% extends "blog/sidebar.html" %}
+{% load filters %}
+
+{% block content %}
+<h6 class="mb-4">Favorites</h6>
+
+{% for post in favorites %}
+	<article class="media content-section">
+		<img class="rounded-circle article-img" src="{{ post.author.profile.image.url }}">
+		<div class="media-body">
+			<div class="article-metadata">
+				<a href="{% url 'post:user-posts' post.author.username %}">{{ post.author }}</a>
+				<small class="text-muted ml-2">{{ post.date_posted}} </small>
+				{% include "blog/post_dropdown.html" %}
+		 	</div>
+				<small class="text-muted pt-6">Posted in <a href="{% url 'activity:activitypost-detail' post.author post.activity.pk  post.activity.slug %}"> {{ post.activity }}</a></small>
+				{% if post.content|length > 40 %}
+					{% autoescape off %}
+						<p class="article-content">{{ post.content| truncatewords:40|parse_content}} <a href="{% url 'post:post-detail' post.author post.id %}">read more</a></p>
+					{% endautoescape %}
+				{% else %}
+					{% autoescape off %}
+					<p class="article-content">{{ post.content|parse_content }}</p>
+					{% endautoescape %}
+				{% endif %}
+				{% if post.image %}
+					<img src="{{post.image.url}}" class=" rounded img-fluid mb-4" alt="...">
+				{% endif %}	
+
+				{% include "blog/post_activities.html" %}
+		</div>
+	</article>
+{% endfor %}
+{% endblock content %}

@@ -1,0 +1,44 @@
+{% extends 'blog/sidebar.html' %}
+{% load relationship_tags %}
+
+{% block followbutton %} 
+	{% include "relationship/follow_button.html" %}
+{% endblock followbutton %}
+
+{% block content %}
+<h4 class="mb-4">Following</h4>
+<hr>
+	{% if user == user_profile and users.count == 0 %}
+		<div class="card">
+			<div class="card-body">
+				You do not have any users following you yet. <a href="#">Click to find meet new users</a>
+		  	</div>
+		</div>
+	{% elif user != user_profile and users.count == 0 %}
+		<div class="card">
+			<div class="card-body">
+		  		{{ user_profile.username }} doesn't have any followers yet. 
+		  	</div>
+		</div>
+	{% endif %}
+	{% friends_for_user user as friend_dict %}
+		{% for user in users %}
+			{% dict_entry_for_item user.username from friend_dict as friend %}
+				<div class="media mt-4">
+					<img class="rounded-circle article-img" src="{{user.profile.image.url}}">
+				  	<div class="media-body">
+					    <span class="text-muted">{{ user.profile.first_name}} {{ user.profile.last_name}}</span>
+					    <br>
+					    <p class="mt-0"><a href="{% url 'post:user-posts' user.username %}">@{{user.username}}</a>
+					    </p>
+				  	</div>
+					  	{% if user != request.user %}
+					  		<form method="POST" action="{% if friend %}{% url 'relationship:unfollow_user' user.username %} {% else %} {% url 'relationship:follow_user' user.username %} {% endif %}">
+								{% csrf_token %}
+	                    		<button class="btn btn-outline-primary">{% if friend %}Unfollow{% else %}Follow{% endif %}</button>
+	                		</form>
+	                	{% endif %}
+				</div>
+				<hr>
+		{% endfor %}
+{% endblock content %}

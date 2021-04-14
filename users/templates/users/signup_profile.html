@@ -1,0 +1,24 @@
+{% extends "blog/index.html"%}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="col-md-6 col-sm-12 col-lg-6  pb-sm-4">
+	<h1 class="text-uppercase text-center text-md-left main-text">Almost there...</h1>
+	<h4 class="text-center text-md-left text-color">don't forget to update your friends on how close you are to achiveing your set goal.</h4>
+</div>
+
+<div class="col-md-6 col-sm-12 col-lg-5">
+	<div class="content-section">
+		<form method="POST">
+			{% csrf_token %}
+			<fieldset class="form-group">
+				<legend clas="border-bottom mb-4">Create Your Profile</legend>
+				{{ form|crispy }}
+			</fieldset>
+			<div class="form-group">
+				<button class="btn btn-outline-info" type="submit">Create Profile</button>
+			</div>
+		</form>
+	</div>
+</div>
+{% endblock content %}

@@ -1,0 +1,92 @@
+<!-- imports the sidebar file here -->
+{% extends "blog/base.html" %}
+{% load crispy_forms_tags %}
+{% load filters %}
+
+{% block usersidebar %} 
+{% include "blog/right_sidebar.html" %}
+{% endblock usersidebar %}
+<!-- displays the the block contents in this html in the block content of base.html file -->
+{% block content %}
+
+{% include "blog/user_info_tab.html"%}
+
+{% if user == user_profile and posts_count == 0 %}
+<div class="card mb-4">
+  <div class="card-body">
+  	You haven't created any activities yet. You must create an activity to start posting.
+  	<a href="">Create Activity</a>  
+  </div>
+</div>
+{% elif user != user_profile and posts_count == 0 %}
+	<div class="card mb-4">
+		<div class="card-body">
+			{{ user_profile.username }} hasn't posted anything yet...
+		</div>
+	</div>
+{% endif %}
+
+{% if user == user_profile and posts_count >= 1 %}
+	{% include "blog/post_form.html" %}
+{% endif %}
+
+<div id="all-posts">
+	{% for post, is_liked, is_favorite in posts %}
+		<article class="media content-section">
+			<img class="rounded-circle article-img" src="{{ post.author.profile.image.url }}">
+			<div class="media-body">
+				<div class="article-metadata">
+					<a href="{% url 'post:user-posts' post.author.username %}">{{ post.author }}</a>
+					<small class="text-muted ml-2">{{ post.date_posted}} </small>
+					{% include "blog/post_dropdown.html" %}
+			 	</div>
+					<small class="text-muted pt-6">Posted in <a href="{% url 'activity:activitypost-detail' post.author post.activity.pk  post.activity.slug %}"> {{ post.activity }}</a></small>
+					{% if post.content|length > 40 %}
+						{% autoescape off %}
+							<p class="article-content">{{ post.content| truncatewords:40|parse_content}} <a href="{% url 'post:post-detail' post.author post.id %}">read more</a></p>
+						{% endautoescape %}
+					{% else %}
+						{% autoescape off %}
+						<p class="article-content">{{ post.content|parse_content }}</p>
+						{% endautoescape %}
+					{% endif %}
+					{% if post.image %}
+						<img src="{{post.image.url}}" class=" rounded img-fluid mb-4" alt="...">
+					{% endif %}					
+					<div class="row">
+						<div class="col-3" id="{{ post.id}}">
+							{% include "blog/post_like_button.html" %}
+						</div>
+						<div class="col-4">
+							<p><a href="{% url 'post:post-detail' post.author post.id %}">Comment ({{ post.comment_set.count }})</a></p>
+						</div>
+						<div class="col-4" id="favorite-{{ post.id}}">
+							{% include "blog/post_favorite_button.html" %}
+						</div>
+					</div>
+			</div>
+		</article>
+	{% endfor %}
+</div>
+	<!-- is_paginated is a variable available from the paginator object in the PostListView -->
+	{% if is_paginated %}
+		<!-- if codeblock to display the first and previous pages as a button -->
+		{% if page_obj.has_previous %}
+			<a class="btn btn-outline-info mb-4" href="?page=1">First</a>
+			<a class="btn btn-outline-info mb-4" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+		{% endif %}
+
+		{% for num in page_obj.paginator.page_range %}
+			{% if page_obj.number == num %}
+				<a class="btn btn-info mb-4" href="?page={{ num }}">{{ num }}</a>
+			{% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+				<a class="btn btn-outline-info mb-4" href="?page={{ num }}">{{ num }}</a>
+			{% endif %}
+		{% endfor %}
+
+		{% if page_obj.has_next %}
+			<a class="btn btn-outline-info mb-4" href="?page={{ page_obj.next_page_number}}">Next</a>
+			<a class="btn btn-outline-info mb-4" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+		{% endif %}
+	{% endif %}
+{% endblock content %}

@@ -1,0 +1,14 @@
+{% load relationship_tags %}
+
+{% friends_for_user user as friend_dict %}
+	{% dict_entry_for_item user_profile.username from friend_dict as friend %}
+		{% if user_profile != request.user %}
+			<form method="POST" action="{% if friend %}{% url 'relationship:unfollow_user' user_profile.username %} {% else %} {% url 'relationship:follow_user' user_profile.username %} {% endif %}">
+		  		{% csrf_token %}
+		  		{% if friend %}
+					<button class="btn btn-outline-danger"><b>Unfollow</b></button>
+				{% else %}
+					<button class="btn btn-outline-primary"><b>Follow</b></button>
+				{% endif %}
+			</form>
+		{% endif %}

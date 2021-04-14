@@ -1,0 +1,32 @@
+{% load crispy_forms_tags %}
+
+<div class="content-section">
+		<div class="media mt-4">
+		  <img src="{{ user_profile.profile.image.url }}" class="rounded-circle article-img mr-3" alt="...">
+		  <div class="media-body">
+			    <form method="POST" enctype="multipart/form-data" id="post-form">
+					{% csrf_token %}
+					<fieldset class="form-group">
+						{{form.content|as_crispy_field}}
+						<div class="form-row">
+							<div class="form-group col-md-8">
+								{{form.activity|as_crispy_field}}
+							</div>
+							<div class="form-group col-md-2">
+								<label class="btn btn-outline-primary">
+									<input type="file" class="d-none" name="image" accept="image/*" class="clearablefileinput" id="id_image">
+									Photo
+								</label>
+							</div>
+							<div class="form-group col-md-2">
+								<button class="btn btn-outline-info" type="submit">Share</button>
+							</div>
+						</div>
+					</fieldset>
+					<!-- <div class="form-group">
+						<button class="btn btn-outline-info" type="submit">Post</button>
+					</div> -->
+				</form>
+		  </div>
+		</div>
+	</div>

@@ -1,0 +1,11 @@
+{% extends "blog/user_posts.html" %}
+{% load relationship_tags %}
+
+{% friends_for_user user as friend_dict %}
+	{% dict_entry_for_item user_profile.username from friend_dict as friend %}
+		{% if user_profile != request.user %}
+			<form method="POST" action="{% if friend %}{% url 'relationship:unfollow_user' view.kwargs.username %} {% else %} {% url 'relationship:follow_user' view.kwargs.username %} {% endif %}">
+		  		{% csrf_token %}
+				<button class="btn btn-outline-primary">{% if friend %}Unfollow{% else %}Follow{% endif %}</button>
+			</form>
+		{% endif %}

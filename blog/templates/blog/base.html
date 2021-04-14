@@ -1,0 +1,152 @@
+{% load static %} <!-- loads in static css file -->
+<!DOCTYPE html>
+<html>
+<head>
+
+	 <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static 'blog/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <!-- static creates an absolute url to the css file -->
+    <link rel="stylesheet" type="text/css" href=" {% static 'blog/main.css' %}">
+    <link type="text/x-scss" href="{% static 'style.scss' %}" rel="stylesheet" media="screen">
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.css" integrity="sha256-b88RdwbRJEzRx95nCuuva+hO5ExvXXnpX+78h8DjyOE=" crossorigin="anonymous" />
+
+	{% if title%}
+		<title> Django Blog - {{ title }}</title>
+	{% else %}
+		<title> Django Blog </title>
+	{% endif %}
+</head>
+<body>
+	{% include "blog/header.html" %}
+	<main role="main" class="container">
+	  <div class="row">
+        {% include "blog/left_sidebar.html" %}
+	        <div class="col-md-9 col-lg-7">
+	        	{% if messages %}
+	        		{% for message in messages %}
+	        			<div class="alert alert-{{ message.tags }}">
+	        				{{ message }}
+	        			</div>
+	        		{% endfor %}
+	        	{% endif %}
+	          		{% block content %}{% endblock %}
+	        </div>
+	        <div class="col-lg-3">
+				<div class="list-group">
+					{% block usersidebar %} {% endblock usersidebar %}
+				</div>
+			</div>
+	  </div>
+	</main>
+
+		<!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+      <!-- jQuery -->
+  	<!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>-->
+  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+  	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="{% static 'blog/js/bootstrap.min.js' %}"></script>
+    <script src="https://kit.fontawesome.com/8a64c87685.js"></script>
+     <!-- Fengyuan Chen -->
+  	<script src="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.js" integrity="sha256-/7FLTdzP6CfC1VBAj/rsp3Rinuuu9leMRGd354hvk0k=" crossorigin="anonymous"></script>
+
+    <script>
+    	$(function() {
+    		$('.dropdown-toggle').dropdown()
+    	});
+    	    	
+    	$(function () {
+  			$('[data-toggle="tooltip"]').tooltip()
+		});
+
+		$(function () {
+			$("#id_end_date").datepicker({
+				format:'dd/mm/yyyy',
+			});
+		});
+
+		$(function () {
+			$("#id_start_date").datepicker({
+				format:'dd/mm/yyyy',
+			});
+		});
+
+		$(function() {
+			$("#id_q").autocomplete({
+				source: "{% url 'post:search-users' %}",
+				minlength: 2
+			});
+		});
+
+        $(document).on('submit', '#post-form', function(e){
+            e.preventDefault();
+            $.ajax({
+                type: 'POST',
+                url: "{% url 'post:create-post' %}",
+                data: {
+                    post_content: $('#id_content').val(),
+                    post_activity: $('#id_activity').val(),
+                    post_image: $('#id_image').val(),
+                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                },
+                success: function(json) {
+                    $('#id_content').val('');
+                    $('#id_activity').val('');
+                    $('#all-posts').load(" #all-posts > *");
+                    
+                }
+            })
+        });
+
+        $(document).ready(function(event){
+        	$(document).on('click', '.like-button', function(event){
+        		event.preventDefault();
+        		var pk = $(this).attr('value');
+        		$.ajax({
+        			type: 'POST',
+        			url: "{% url 'post:like-post' %}",
+        			data: {'id': pk, 'csrfmiddlewaretoken': '{{ csrf_token }}'},
+        			datType: 'json',
+        			success: function(response) {
+        				$('#'+pk).html(response['form'])
+        				console.log($('#like-section').html(response['form']));
+        			},
+        			error: function(rs, e) {
+        				console.log(rs.responseText);
+        			},
+        		});
+        	});
+        });
+
+        $(document).ready(function(event){
+            $(document).on('click', '.favorite-button', function(event){
+                event.preventDefault();
+                var pk = $(this).attr('value');
+                $.ajax({
+                    type: 'POST',
+                    url: "{% url 'post:favorite-post' %}",
+                    data: {'id': pk, 'csrfmiddlewaretoken': '{{ csrf_token }}'},
+                    datType: 'json',
+                    success: function(response) {
+                        $('#favorite-'+pk).html(response['form'])
+                        console.log($('#favorite-'+pk).html(response['form']));
+                    },
+                    error: function(rs, e) {
+                        console.log(rs.responseText);
+                    },
+                });
+            });
+        });
+    </script>
+</body>
+</html>

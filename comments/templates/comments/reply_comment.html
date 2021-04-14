@@ -1,0 +1,84 @@
+{% extends "blog/base.html"%}
+{% load crispy_forms_tags %}
+{% load filters %}
+
+{% block content %}
+<h6><a href="{% url 'post:post-detail' comment.author comment.post.id%}"> < Back to Post</a></h6>
+    <div class="media mt-3">
+     <img class="rounded-circle article-img" src="{{ comment.author.profile.image.url }}">
+      	<div class="media-body">
+	      	<div class="article-meta-data">
+				<a class="mr-2" href="{% url 'post:user-posts' comment.author.username %}">{{ comment.author}}</a>
+				<small class="text-muted">{{ comment.date_posted|timesince }}</small>
+				{% if user == comment.author %}
+					<div class="edit-elipsis" id="navbarNavDropdown">
+					    <ul class="navbar-nav">
+						    <li class="nav-item dropdown">
+						       <a class="nav-link dropdown-toggle" href="#" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></a>
+						        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+						          <a class="dropdown-item" href="{% url 'comment:comment-update' comment.id %}">Edit</a>
+						          <a class="dropdown-item" href="{% url 'comment:comment-delete' comment.id %}">Delete</a>
+						        </div>
+						    </li>
+					    </ul>
+				 	</div>
+				{% endif %}
+			</div>
+			<p class="article-content">{{ comment.content }}</p>
+			{% if comment.image %}
+				<img src="{{comment.image.url}}" class=" rounded img-fluid mb-4" alt="...">
+			{% endif %}
+			<footer><small><a href="">Like</a></small>
+			<p class="comment-hr"><span>Replies</span></p>
+		</div>
+		</div>
+		{% for reply in comment.replies.all %}
+			<div class="media">
+				<img class="rounded-circle article-img" src="{{ reply.author.profile.image.url }}">
+					<div class="media-body">
+						<div class="article-meta-data">
+							<a class="mr-2" href="{% url 'post:user-posts' reply.author.username %}">{{ reply.author}}</a>
+							<small class="text-muted">{{ reply.date_posted }}</small>
+							{% if user == reply.author %}
+								<div class="edit-elipsis" id="navbarNavDropdown">
+								    <ul class="navbar-nav">
+									    <li class="nav-item dropdown">
+									       <a class="nav-link dropdown-toggle" href="#" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></a>
+									        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+									          <a class="dropdown-item" href="{% url 'comment:reply-update' reply.id %}">Edit</a>
+									          <a class="dropdown-item" href="{% url 'comment:comment-delete' reply.id %}">Delete</a>
+									        </div>
+									    </li>
+								    </ul>
+							 	</div>
+							{% endif %}
+						</div>
+						{% autoescape off %}
+							<p class="article-content">{{ reply.content | parse_content}}</p>
+						{% endautoescape %}
+						{% if reply.image %}
+							<img src="{{reply.image.url}}" class=" rounded img-fluid mb-4" alt="...">
+						{% endif %}
+						<footer><small><a href="">Like</a></small>
+							<hr class="mt-2">
+					</div>
+			</div>
+		{% endfor %}
+
+		<div class="media mt-2">
+			<img class="rounded-circle article-img" src="{{ user.profile.image.url }}">
+			<div class="media-body">
+			    <form method="POST" enctype="multipart/form-data">
+					{% csrf_token %}
+					<fieldset class="form-group">
+						<input type="hidden" name="parent_id" value="{{ comment.id }}">
+						{{ form|crispy }}
+					</fieldset>
+					<div class="form-group">
+						<button class="btn btn-outline-info" type="submit">Reply</button>
+					</div>
+				</form>
+			</div>
+		</div>
+
+{% endblock%}

@@ -1,0 +1,144 @@
+<!-- imports the base file here -->
+{% extends "blog/base.html"%}
+{% load crispy_forms_tags %}
+{% load filters %}
+<!-- displays the posts in the base.html file -->
+{% block content %}
+
+<div class="media">
+  <img class="rounded-circle article-img" src="{{ object.author.profile.image.url }}">
+  <div class="media-body">
+	   <div class="article-meta-data">
+			<!-- here we used the default naming convention of class based view(object). Check the postlistview for how its changed -->
+			<a class="mr-2" href="{% url 'post:user-posts' object.author.username %}">{{ object.author}}</a>
+			<small class="text-muted">{{ object.date_posted|date:"F d, Y" }}</small>
+		</div>
+			<small class="text-muted">Posted in<a href="{% url 'activity:activitypost-detail' object.author object.activity.id object.activity.slug %}"> {{ object.activity }}</a> </small>
+			<h2 class="article-title">{{ object.title}}</h2>
+			{% autoescape off %}
+				<p class="article-content">{{ object.content | parse_content}}</p>
+			{% endautoescape %}
+			{% if object.image %}
+				<img src="{{object.image.url}}" class=" rounded img-fluid mb-4" alt="...">
+			{% endif %}
+			<div class="row">
+				<div class="col-2">
+					{% if is_liked %}
+						<p><a href="{% url 'post:like-post' object.id %}">unlike ({{object.likes.count}})</a></p>
+					{% else %}
+						<p><a href="{% url 'post:like-post' object.id %}">Like ({{object.likes.count}})</a></p>
+					{% endif %}
+				</div>
+				<div class="col-2">
+					{% if is_favorite %}
+						<p><a href="{% url 'post:favorite-post' object.id %}">unfavorite</a></p>
+					{% else %}
+						<p><a href="{% url 'post:favorite-post' object.id %}">favorite</a></p>
+					{% endif %}
+				</div>
+			</div>
+			{% if comments.count <= 0 %}
+				<p class="comment-hr"><span>No comments</span></p>
+			{% else %}
+				<p class="comment-hr"><span>Comments ({{comments.count}})</span></p>
+			{% endif %}
+			{% for comment in comments %}
+			    <div class="media">
+			     <img class="rounded-circle article-img" src="{{ comment.author.profile.image.url }}">
+			      	<div class="media-body">
+				      	<div class="article-meta-data">
+							<a class="mr-2" href="{% url 'post:user-posts' comment.author.username %}">{{ comment.author}}</a>
+							<small class="text-muted">{{ comment.date_posted|timesince }}</small>
+							{% if user == comment.author %}
+								<div class="edit-elipsis" id="navbarNavDropdown">
+								    <ul class="navbar-nav">
+									    <li class="nav-item dropdown">
+									       <a class="nav-link dropdown-toggle" href="#" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></a>
+									        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+									          <a class="dropdown-item" href="{% url 'comment:comment-update' comment.id %}">Edit</a>
+									          <a class="dropdown-item" href="{% url 'comment:comment-delete' comment.id %}">Delete</a>
+									        </div>
+									    </li>
+								    </ul>
+							 	</div>
+							{% endif %}
+						</div>
+						{% autoescape off %}
+							<p class="article-content">{{ comment.content | parse_content}}</p>
+						{% endautoescape %}
+						{% if comment.image %}
+							<img src="{{comment.image.url}}" class=" rounded img-fluid mb-4" alt="...">
+						{% endif %}
+
+						<div class="row">
+							<div class="col-2">
+								{% if comment.id in comment_like %}
+									<a href="{% url 'comment:like-comment' comment.id %}">unlike ({{comment.likes.count}})</a>
+								{% else %}
+									<a href="{% url 'comment:like-comment' comment.id %}">Like ({{comment.likes.count}})</a>
+								{% endif %}
+							</div>
+							<div class="col-3">
+								<a href="{% url 'comment:reply-thread' comment.id %}">Reply ({{ comment.replies.count }})</a>
+							</div>
+						</div>
+
+						{% comment %}
+						<footer><h6><a href="#">Like</a> | <a data-toggle="collapse" data-target="#comment_reply{{comment.id}}" aria-expanded="false" aria-controls="collapseExample" href="#">Reply</a> {% if comment.replies.count >= 1 %} | <a href="{% url 'comment:reply-thread' comment.id %}">View {% if comment.replies.count == 1 %} {{ comment.replies.count }} reply {% elif comment.replies.count > 1 %} {{ comment.replies.count }} replies {% endif %} {% endif %}</a></h6>
+						{% endcomment %}
+
+						<div class="collapse" id="comment_reply{{comment.id}}">
+							<!-- {% if comment.replies.count > 0 %}
+		      					<p class="comment-hr"><span>Replies ({{ comment.replies.count }})</span></p>
+		      				{% endif %}
+							{% for reply in comment.replies.all %}
+								<div class="media mt-3">
+		        					<img class="rounded-circle article-img" src="{{ reply.author.profile.image.url }}">
+		      						<div class="media-body">
+		        						<div class="article-meta-data">
+											<a class="mr-2" href="{% url 'post:user-posts' comment.author.username %}">{{ reply.author}}</a>
+											<small class="text-muted">{{ reply.date_posted }}</small>
+										</div>
+										<p class="article-content">{{ reply.content }}</p>
+		      						</div>
+		   						</div>
+		   						<hr>
+			   				{% endfor %} -->
+			   				<div class="media mt-2">
+								<img class="rounded-circle article-img" src="{{ user.profile.image.url }}">
+								<div class="media-body">
+								    <form method="POST" enctype="multipart/form-data">
+										{% csrf_token %}
+										<fieldset class="form-group">
+											<input type="hidden" name="parent_id" value="{{ comment.id }}">
+											{{ comment_form|crispy }}
+										</fieldset>
+										<div class="form-group">
+											<button class="btn btn-outline-info" type="submit">Reply</button>
+										</div>
+									</form>
+								</div>
+							</div>
+			   			</div>
+			   			<hr>
+					</div>
+	      		</div>
+	      	{% endfor%}
+		    <div class="media">
+				  <img class="rounded-circle article-img" src="{{ user.profile.image.url }}">
+				  <div class="media-body">
+				    <form method="POST" enctype="multipart/form-data">
+						{% csrf_token %}
+						<fieldset class="form-group">
+							{{comment_form|crispy}}
+								<div class="form-group" class="form-group col-md-6">
+									<button class="btn btn-outline-info" type="submit">Comment</button>
+								</div>
+							</div>
+						</fieldset>
+					</form>
+				  </div>
+				</div>
+	    	</div>
+</div>
+{% endblock content %}

@@ -1,0 +1,15 @@
+<div class="row">
+	<div class="col-3" id="{{ post.id}}">
+		{% include "blog/post_like_button.html" %}
+	</div>
+	<div class="col-4">
+		<p><a href="{% url 'post:post-detail' post.author post.id %}">Comment ({{ post.comment_set.count }})</a></p>
+	</div>
+	<div class="col-4">
+		{% if post.id in is_favorite %}
+			<p><a href="{% url 'post:favorite-post' post.id %}">unfavorite ({{post.favorite.count}})</a></p>
+		{% else %}
+			<p><a href="{% url 'post:favorite-post' post.id %}">favorite ({{post.favorite.count}})</a></p>
+		{% endif %}
+	</div>
+</div>

@@ -1,0 +1,5 @@
+{% if is_favorite %}
+	<button type="submit" value="{{ post.id }}" class="favorite-button btn btn-danger">unfavorite ({{post.favorite.count}})</button>
+{% else %}
+	<button type="submit" value="{{ post.id }}" class="favorite-button btn btn-primary">favorite ({{post.favorite.count}})</button>
+{% endif %}

@@ -1,0 +1,26 @@
+{% extends 'blog/base.html' %}
+{% load relationship_tags %}
+
+{% block content %}
+<h3>Newest Users</h3>
+<hr>
+<div class="card-columns">
+	{% friends_for_user user as friend_dict %}
+		{% for user in users %}
+			{% dict_entry_for_item user.username from friend_dict as friend %}
+				{% if user != request.user %}
+				  <div class="card text-center">
+						<img class="rounded article-img mt-4" src="{{user.profile.image.url}}">
+						<div class="card-body">
+	      					<h5 class="card-title">{{ user.profile.first_name}} {{ user.profile.last_name}}</h5>
+	      					<p class="card-text">{{user.profile.bio}}</p>
+	      					<form method="POST" action="{% if friend %}{% url 'relationship:unfollow_user' user.username %} {% else %} {% url 'relationship:follow_user' user.username %} {% endif %}">
+								  		{% csrf_token %}
+	                    				<button class="btn btn-outline-primary">{% if friend %}Unfollow{% else %}Follow{% endif %}</button>
+	                				</form>
+	    				</div>
+    			</div>
+				{% endif %}
+	{% endfor %}
+</div>
+{% endblock content %}

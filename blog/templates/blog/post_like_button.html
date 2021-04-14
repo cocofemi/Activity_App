@@ -1,0 +1,5 @@
+{% if is_liked %}
+	<button type="submit" value="{{ post.id }}" class="like-button btn btn-danger">unlike ({{post.likes.count}})</button>
+{% else %}
+	<button type="submit" value="{{ post.id }}" class="like-button btn btn-primary">Like ({{post.likes.count}})</button>
+{% endif %}

@@ -1,0 +1,234 @@
+<!-- imports the base file here -->
+{% extends "blog/base.html"%}
+<!-- displays the the block contents in this html in the block content of base.html file -->
+{% block sidebar %}
+<div class="sidebar-section">
+	<div class="col-md-4">
+		<div class="card" style="width: 18rem;">
+		<img src="{{ user_profile.profile.image.url }}" class="card-img-top" alt="...">
+		  	<div class="card-header">
+		  		<a href="#" class="btn btn-primary btn-lg btn-block">Follow</a>
+  			</div>
+				<!-- <ul class="list-group list-group-flush">
+					<li class="list-group-item list-group-item-light"><a href="">Followers <span class="badge badge-primary">4</span></a></li>
+					<li class="list-group-item list-group-item-light"><a href="">Following <span class="badge badge-primary">104</span></a></li>
+					<li class="list-group-item list-group-item-light"><a href="">Latest Posts</a></li>
+				    <li class="list-group-item list-group-item-light"><a href="{% url 'blog-activity' view.kwargs.username %}">Activities</a></li>
+				    <li class="list-group-item list-group-item-light"><a href="">Calendars</a></li>
+				</ul> -->
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+<input type="text" name="title" maxlength="100" class="textinput textInput form-control" required="" id="id_title">
+
+<i class="fas fa-ellipsis-h fa-lg">
+
+	<small><a href="{% url 'post:post-detail' post.id %}">View all comments and replies ({{ post.comment_set.count }})</a></small>
+
+
+margin-top: -31px;
+margin-left: 450px;
+
+<div>
+	<a class="btn btn-secondary btn-small mt-1 mb-1" href="{% url 'post:post-update' object.id %}">Update</a>
+	<a class="btn btn-danger btn-small mt-1 mb-1" href="{% url 'post:post-delete' object.id %}">Delete</a>
+</div>
+
+{% url 'activity:activitypost-detail' post.author post.activity.id post.activity.slug %}
+
+
+, placeholder='Search for your friends by name or e-mail address'
+
+
+	# activities = Activity.objects.all()
+	# result_list = sorted(chain(posts, activities), key=attrgetter('date_posted'), reverse=True)
+
+	# q = None
+	# if request.method == 'GET':
+	# 	search_form = SearchForm(request.GET or None)
+	# 	if search_form.is_valid():
+	# 		q = search_form.cleaned_data['q']
+	# 		users = User.objects.filter(username__icontains=q) | User.objects.filter(
+	# 			email__icontains=q)
+	# 		return redirect('relationship:find_add_user')
+	# 	else:
+	# 		users = []
+
+
+<div class="list-group">
+						<a href="#" class="list-group-item list-group-item-action active">
+							<div class="d-flex w-100 justify-content-between">
+							    <h5 class="mb-1">List group item heading</h5>
+							    <small>3 days ago</small>
+							</div>
+							<p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
+							<small>Donec id elit non mi porta.</small>
+						</a>
+						<a href="#" class="list-group-item list-group-item-action">
+						    <div class="d-flex w-100 justify-content-between">
+						      <h5 class="mb-1">List group item heading</h5>
+						      <small class="text-muted">3 days ago</small>
+						    </div>
+						    <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
+						    <small class="text-muted">Donec id elit non mi porta.</small>
+						</a>
+						<a href="#" class="list-group-item list-group-item-action">
+						    <div class="d-flex w-100 justify-content-between">
+						      <h5 class="mb-1">List group item heading</h5>
+						      <small class="text-muted">3 days ago</small>
+						    </div>
+						    <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
+						    <small class="text-muted">Donec id elit non mi porta.</small>
+						</a>
+					</div>
+
+
+def __str__(self):
+		return 'Comment by {}, {}'.format(self.author.username, self.content[:60])
+
+
+<div id="top_nav">
+<ul>
+<li class​=​"mainMenu-itemLevel1"​>
+<a href="index.php?id=2" class​=​"active"​>​seite1​</a></li>
+<li class​=​"mainMenu-itemLevel1"​>
+<a href​=​"index.php?id=3"​>​seite2​</a>
+</li><li class​=​"mainMenu-itemLevel1"​>
+<a href​=​"index.php?id=4"​>​seite3​</a></li>
+<li class​=​"mainMenu-itemLevel1"​>
+<a href​=​"index.php?id=6"​>​seite4​</a></li>
+<li class​=​"mainMenu-itemLevel1"​>
+<a href​=​"index.php?id=7"​>​Seite5 lang Hover</a></li>
+</ul>
+
+
+</div>
+
+
+<h2><a class="article-title" href="{% url 'post:post-detail' post.author post.id %}">{{ post.title}}</a></h2>
+
+
+<hr>
+	{% friends_for_user user as friend_dict %}
+		{% for user in users %}
+			{% dict_entry_for_item user.username from friend_dict as friend %}
+				{% if user != request.user %}
+						<div class="media mb-2">
+						  <img class="rounded-circle article-img" src="{{user.profile.image.url}}">
+							<div class="media-body">
+								<span class="text-muted">{{ user.profile.first_name}} {{ user.profile.last_name}}</span>
+					    		<br>
+								<p class="mt-0"><a href="{% url 'post:user-posts' user.username %}">@{{ user.username }}</a>
+								</p>
+							</div>
+								<form method="POST" action="{% if friend %}{% url 'relationship:unfollow_user' user.username %} {% else %} {% url 'relationship:follow_user' user.username %} {% endif %}">
+							  		{% csrf_token %}
+                    				<button class="btn btn-outline-primary">{% if friend %}Unfollow{% else %}Follow{% endif %}</button>
+                				</form>
+						</div>
+						<hr>
+				{% endif %}
+	{% endfor %}
+
+
+	<h2><a class="article-title" href="{% url 'post:post-detail' post.author post.id %}">{{ post.title}}</a></h2>
+
+	
+					<!-- {% comment %}
+					<h6><footer><a href="#">Like</a> | <a href="{% url 'comment:post-comment' post.author post.id %}">Comment</a> </footer></h6>
+
+					{% if post.comment_set.count > 0 %}
+					<p class="comment-hr"><span><a href="{% url 'post:post-detail' post.author post.id %}" class="btn btn-sm btn-outline-info">View {% if post.comment_set.count > 0 %} {{ post.comment_set.count }} comment{% if post.comment_set.count > 1 %}s {% endif %} {%endif%}</a></span></p>
+
+					{% else %}
+					<p class="comment-hr"><span><a href="#" class="btn btn-outline-info btn-sm disabled" tabindex="-1">No comments</a></span></p>
+
+					{% endif %}
+					{% endcomment %} -->
+
+					<!-- {% comment %}
+					{% for post in post.comment_set.all|slice:":1" %}
+						<div class="media">
+							<img class="rounded-circle comment-img mt-1" src="{{ post.author.profile.image.url }}">
+							<div class="media-body">
+								<div class="article-metadata">
+									<a class="mr-2" href="{% url 'post:user-posts' post.author.username %}">{{ post.author}}</a>
+									<small class="text-muted">{{ post.date_posted|timesince }}</small>
+									{% if user == post.author %}
+										<div class="edit-elipsis" id="navbarNavDropdown">
+										    <ul class="navbar-nav">
+											    <li class="nav-item dropdown">
+											       <a class="nav-link dropdown-toggle" href="#" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></a>
+											        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+											          <a class="dropdown-item" href="#">Edit</a>
+											          <a class="dropdown-item" href="{% url 'comment:comment-delete' post.id %}">Delete</a>
+											          <a class="dropdown-item" href="#">Something else here</a>
+											        </div>
+											    </li>
+										    </ul>
+									 	</div>
+									{% endif %}
+								</div>
+							   <p class="article-content">{{ post.content}}</p>
+							   <footer><a href="#">Like</a> | <a href="{% url 'comment:reply-thread' post.id %}">Reply</a> </footer>
+							</div>
+						</div>
+					{% endfor %}
+					{% endcomment %} -->
+
+
+	"<article class='media content-section'>"+
+                            "<img class='rounded-circle article-img' src=''>"+
+                            "<div class='media-body'>"+
+                                "<div class='article-metadata'>"+
+                                    "<a href=''>" +
+                                        json.author+
+                                    "</a>"+
+                                    "<small class='text-muted ml-2'>"+
+                                        json.date_posted+
+                                   " </small>"+
+                                   "</div>"+
+                                   "<small class='text-muted pt-6'>"+
+                                        "Posted in"+
+                                        "<a href=''>"+
+                                            json.activity+
+                                        "</a>"+
+                                        "</small>"+
+                                        "<p class='article-content'>"+
+                                            json.content+
+                                        "</p>"+
+                                "</div>"+
+                            "</div>"+
+                        "</article>"
+
+<!-- 		<ul class="list-group">
+			<li class="list-group-item">
+				<div class="media  justify-content-between">
+				  <img class="rounded article-img" src="{{ request.user.profile.image.url }}">
+				  <div class="media-body">
+				  	<span class="text-muted">{{request.user.profile.first_name}} {{request.user.profile.last_name}}</span>
+				    <p class="mt-0"><a href="{% url 'post:user-posts' request.user.username %}">@{{request.user.username}}</a></p>
+				  </div>
+				</div>
+		  	</li>
+			<li class="list-group-item d-flex justify-content-between align-items-center">
+				<a href="{% url 'post:user-posts' user.username %}">Posts</a>
+				<span class="badge badge-primary badge-pill">{{ posts_count }}</span>
+			</li>
+		  	<li class="list-group-item d-flex justify-content-between align-items-center">
+		  		<a href="{% url 'activity:activity-list' user.username %}">Activities</a>
+		  		<span class="badge badge-primary badge-pill">{{ activities_count }}</span>
+		  	</li>
+		  	<li class="list-group-item d-flex justify-content-between align-items-center">
+		  		<a href="{% url 'relationship:following-list' user.username %}">Following</a>
+		  		<span class="badge badge-primary badge-pill">{{ following_count }}</span>
+		  	</li>
+		  	<li class="list-group-item d-flex justify-content-between align-items-center">
+		  		<a href="{% url 'relationship:followers-list' user.username %}">Followers</a>
+		  		<span class="badge badge-primary badge-pill">{{ followers_count }}</span>
+		  	</li>
+		</ul> -->
+
+                $('#all-posts').load("{% url 'post:user-posts' request.user.username %}" + '#all-posts > *');

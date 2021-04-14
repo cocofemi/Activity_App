@@ -1,0 +1,44 @@
+
+<header class="site-header">
+	<nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
+	    <div class="container">
+	          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
+	          <span class="navbar-toggler-icon"></span>
+	          </button>
+	        {% if user.is_authenticated %}
+	        	<a class="navbar-brand mr-4" href="{% url 'post:blog-home' %}">Django Blog</a>
+	        {% else %}
+	        	<a class="navbar-brand mr-4" href="{% url 'post:index-home' %}">Django Blog</a>
+	        {% endif %}
+
+	        <div class="collapse navbar-collapse" id="navbarToggle">
+	            <div class="navbar-nav mr-auto">
+	              {% block search_form %} {% endblock search_form %}
+	            </div>
+	            <!-- Navbar Right Side -->
+	            <div class="navbar-nav">
+	            	{% if user.is_authenticated %}
+	            	{% include "blog/user_search.html" %}
+					 <a href="{% url 'notifications:all' %}" class="nav-item nav-link">Notifications</a>
+					 <img src="{{ user.profile.image.url }}" class="rounded-circle nav-img" alt="...">
+	            		<div class="dropdown">
+  							<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">{{ user.profile.last_name }}</a>
+  							<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+  								<a class="dropdown-item" href="{% url 'post:user-posts' request.user %}">View Profile</a>
+    							<a class="dropdown-item" href="{% url 'edit-profile' %}">Edit Profile</a>
+    							<div class="dropdown-divider"></div>
+    							<a class="dropdown-item" href="#">Help</a>
+    							<a class="dropdown-item" href="{% url 'post:blog-about' %}">About</a>
+    							<div class="dropdown-divider"></div>
+    							<a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
+  							</div>
+						</div>
+	            	{% else %}
+		              	<a class="nav-item nav-link" href="{% url 'login' %}">Login</a>
+		              	<a class="nav-item nav-link" href="{% url 'register' %}">Register</a>
+		            {% endif %}
+	            </div>
+	        </div>
+	    </div>
+	</nav>
+</header>

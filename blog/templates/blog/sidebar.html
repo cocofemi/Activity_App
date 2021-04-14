@@ -1,0 +1,55 @@
+{% load static %}
+<html>
+<head>
+	 <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static 'blog/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <!-- static creates an absolute url to the css file -->
+    <link rel="stylesheet" type="text/css" href=" {% static 'blog/main.css' %}">
+    <link type="text/x-scss" href="{% static 'style.scss' %}" rel="stylesheet" media="screen">
+
+	{% if title%}
+		<title> Django Blog - {{ title }}</title>
+	{% else %}
+		<title> Django Blog </title>
+	{% endif %}
+</head>
+<body>	   
+	{% include "blog/header.html" %}         	           	
+	<main role="main" class="container">
+		<div class="row justify-content-center">
+			{% include "users/user_profile_tab.html" %}
+			<div class="col-md-8 col-lg-7 mt-4">
+				{% block content %}{% endblock %}
+			</div>
+		</div>
+	</main>
+		<!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <!--<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.js"integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/8a64c87685.js"></script>
+    <script src="{% static 'blog/js/bootstrap.min.js' %}"></script>
+
+    <script>
+    	$('.dropdown-toggle').dropdown()
+    </script>
+
+    <script type="text/javascript">
+    	$(".comment-reply-btn").click(function(event){
+    		event.preventDefault();
+    		$(this).parent().next(".comment-reply").fadeToggle();
+    	});
+
+
+    </script>
+</body>
+</html>

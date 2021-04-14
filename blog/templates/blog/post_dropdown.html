@@ -1,0 +1,12 @@
+{% if user == post.author %}
+	<ul class="dropdown">
+		<div class="dropdown edit-elipsis">
+	       <a class="nav-link dropdown-toggle" href="#" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></a> <span class="caret"></span>
+	        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+	          <a class="dropdown-item" href="{% url 'post:post-update' post.id %}">Edit</a>
+	          <a class="dropdown-item" href="{% url 'post:post-delete' post.id %}">Delete</a>
+	          <a class="dropdown-item" href="#">Something else here</a>
+	        </div>
+	 	</div>
+	</ul>
+{% endif %}

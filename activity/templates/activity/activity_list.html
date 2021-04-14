@@ -1,0 +1,83 @@
+<!-- imports the sidebar file here -->
+{% extends "blog/sidebar.html" %}
+<!-- displays the the block contents in this html in the block content of base.html file -->
+
+{% block followbutton %} 
+	{% include "relationship/follow_button.html" %}
+{% endblock followbutton %}
+
+{% block content %}
+{% if user == user_profile and activities.count < 0 %}
+	<div class="card">
+	  <div class="card-body">
+	  	<p>You don't have any activites yet. </p><a href="{% url 'activity:activity-create' %}">Create a new activity to start sharing your journey with your friends.</a>
+	  </div>
+	</div>
+
+	{% elif user != user_profile and activities.count == 0 %}
+	<article class="media content-section mt-3">
+		<div class="media-body mb-4">
+			{{user_profile.username}} hasn't started any activities yet...
+		</div>
+	</article>
+
+	{% elif user == user_profile and activities.count > 0 %}
+	<div class="card">
+		<div class="card-body">
+			<h6><a href="{% url 'activity:activity-create' %}">Start a new activity</a></h6>
+		</div>
+	</div>
+{% endif %}
+
+	{% for activity in activities %}
+		<article class="media content-section mt-3">
+			<img class="rounded-circle article-img" src="{{ activity.author.profile.image.url }}">
+			<div class="media-body">
+				<div class="article-metadata">
+					<a href="{% url 'post:user-posts' activity.author.username %}"> {{ activity.author }}</a>
+					<small class="text-muted ml-2">{{ activity.date_posted | timesince }} ago</small>
+					<a class="ml-4" href="#">XXX</a>
+					{% if user == activity.author %}
+						<ul class="dropdown">
+							<div class="dropdown edit-elipsis">
+						       <a class="nav-link dropdown-toggle" href="#" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></a> <span class="caret"></span>
+						        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+						          <a class="dropdown-item" href="{% url 'activity:activity-update' activity.id activity.slug %}">Edit</a>
+						          <a class="dropdown-item" href="{% url 'activity:activity-delete' activity.id activity.slug %}">Delete</a>
+						          <a class="dropdown-item" href="#">Something else here</a>
+						        </div>
+						 	</div>
+						</ul>
+					{% endif %}
+			 	</div>
+			 	<div class="article-metadata">
+					<h4>{{ activity.name}}</h4>
+					<p class="article-content">{{ activity.description }}</p>
+				</div>
+				<p><a href="{% url 'activity:activitypost-detail' activity.author activity.id activity.slug %}">View all posts in {{activity.name}}</a></p>
+			</div>
+		</article>
+	{% endfor %}
+
+	<!-- is_paginated is a variable available from the paginator object in the PostListView -->
+	{% if is_paginated %}
+		<!-- if codeblock to display the first and previous pages as a button -->
+		{% if page_obj.has_previous %}
+			<a class="btn btn-outline-info mb-4" href="?page=1">First</a>
+			<a class="btn btn-outline-info mb-4" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+		{% endif %}
+
+		{% for num in page_obj.paginator.page_range %}
+			{% if page_obj.number == num %}
+				<a class="btn btn-info mb-4" href="?page={{ num }}">{{ num }}</a>
+			{% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+				<a class="btn btn-outline-info mb-4" href="?page={{ num }}">{{ num }}</a>
+			{% endif %}
+		{% endfor %}
+
+		{% if page_obj.has_next %}
+			<a class="btn btn-outline-info mb-4" href="?page={{ page_obj.next_page_number}}">Next</a>
+			<a class="btn btn-outline-info mb-4" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+		{% endif %}
+	{% endif %}
+{% endblock content %}

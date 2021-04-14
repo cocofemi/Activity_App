@@ -1,0 +1,26 @@
+<!-- imports the base file here -->
+{% extends "blog/base.html"%}
+
+<!-- displays the posts in the base.html file -->
+{% block content %}
+	<article class="media content-section">
+		<img class="rounded-circle article-img" src="{{ object.author.profile.image.url }}">
+		<div class="media-body">
+			<div class="article-meta-data">
+				<!-- here we used the default naming convention of class based view(object). Check the postlistview for how its changed -->
+				<a class="mr-2" href="{% url 'post:user-posts' object.author.username %}">{{ object.author}}</a>
+				<small class="text-muted">{{ object.date_posted|date:"F d, Y" }}</small>
+			</div>
+				<h2 class="article-title">{{ object.name }}</h2>
+				<p class="article-content">{{ object.description }}</p>
+				<p class="article-content">{{ object.target }}</p>
+				<p class="article-content">Read all the posts in <a href="{% url 'activity:activitypost-detail' object.author.username object.pk object.slug %}">{{ object.name}}</a></p>
+				{% if object.author == user %}
+					<div>
+						<a class="btn btn-secondary btn-small mt-1 mb-1" href="{% url 'activity:activity-update' object.id object.slug %}">Update</a>
+						<a class="btn btn-danger btn-small mt-1 mb-1" href="{% url 'activity:activity-delete' object.id object.slug %}">Delete</a>
+					</div>
+				{% endif %}
+		</div>
+	</article>	
+{% endblock content %}

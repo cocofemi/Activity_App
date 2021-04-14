@@ -1,0 +1,79 @@
+<!-- imports the base file here -->
+{% extends "blog/sidebar.html" %}
+<!-- displays the the block contents in this html in the block content of base.html file -->
+{% load crispy_forms_tags %}
+
+{% block followbutton %} 
+	{% include "relationship/follow_button.html" %}
+{% endblock followbutton %}
+
+{% block content %}
+<div class="card text-center mb-4 ">
+	<div class="card-header">
+  		<h4> {{activities.name}} 
+  			{% if is_bookmarked %}
+  				<a class="ml-4" href="{% url 'activity:bookmark-activity' pk=activities.id %}">XX</a> 
+  			{% else %}
+  				<a class="ml-4" href="{% url 'activity:bookmark-activity' pk=activities.id %}">yy</a>
+  			{% endif %}
+  		</h4>
+  	</div>
+  	<div class="card-body">
+    	<p class="card-text"> {{ activities.description }} </p>
+    	{% if user == user_profile %}
+	  		<a href="{% url 'post:user-posts' activities.author %}" class="btn btn-primary">Share a post</a>
+	{% endif %}
+  	</div>
+  	<div class="card-footer text-muted">
+    	Start date({{ activities.start_date }}) to End date ({{ activities.end_date }})
+  	</div>
+</div>
+
+{% if activity.count == 0 %}
+	<div class="card mb-4">
+		<div class="card-body">
+	  		<h6>No posts have been shared to this activity yet.</h6>
+	  	</div>
+	</div>
+{% endif %}
+
+{% for post in activity %}
+	<article class="media content-section">
+		<img class="rounded-circle article-img" src="{{ post.author.profile.image.url }}">
+		<div class="media-body">
+			<div class="article-metadata">
+				<a class="mr-2" href="{% url 'post:user-posts' post.author.username %}">{{ post.author}}</a>
+				<small class="text-muted">{{ activities.end_date | timeuntil:post.date_posted}} ago</small>
+				{% include "blog/post_dropdown.html" %}
+			</div>
+				<h2><a class="article-title" href="{% url 'post:post-detail' post.author post.id %}">{{ post.title}}</a></h2>
+				<p class="article-content">{{ post.content }}</p>
+				{% if post.image %}
+					<img src="{{post.image.url}}" class=" rounded img-fluid mb-4" alt="...">
+				{% endif %}
+				{% include "blog/post_activities.html" %}
+		</div>
+	</article>
+{% endfor %}
+	<!-- is_paginated is a variable available from the paginator object in the PostListView -->
+	{% if is_paginated %}
+		<!-- if codeblock to display the first and previous pages as a button -->
+		{% if page_obj.has_previous %}
+			<a class="btn btn-outline-info mb-4" href="?page=1">First</a>
+			<a class="btn btn-outline-info mb-4" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+		{% endif %}
+
+		{% for num in page_obj.paginator.page_range %}
+			{% if page_obj.number == num %}
+				<a class="btn btn-info mb-4" href="?page={{ num }}">{{ num }}</a>
+			{% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+				<a class="btn btn-outline-info mb-4" href="?page={{ num }}">{{ num }}</a>
+			{% endif %}
+		{% endfor %}
+
+		{% if page_obj.has_next %}
+			<a class="btn btn-outline-info mb-4" href="?page={{ page_obj.next_page_number}}">Next</a>
+			<a class="btn btn-outline-info mb-4" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+		{% endif %}
+	{% endif %}
+{% endblock content %}

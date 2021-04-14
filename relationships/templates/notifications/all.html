@@ -1,0 +1,7 @@
+{% extends "blog/base.html" %}
+{% load notification_tags %}
+
+{% block content %}
+<h4 class="mb-4">Notifications</h4>
+	{% render_notifications using request.user.notifications.active %}
+{% endblock content %}

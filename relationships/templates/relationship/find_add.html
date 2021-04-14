@@ -1,0 +1,56 @@
+{% extends "blog/base.html" %}
+{% load profile_tags %}
+{% load crispy_forms_tags %}
+
+
+{% block content %}
+<form class="standard" method="GET">
+	<div class="form-row">
+		<!-- <input class="form-control form-control-lg col-9" type="text" name="q" value="" maxlength="50" class="textinput textInput form-control" required="" id="id_q"> -->
+		<div class="col-9">
+	   		{{search_form.q|as_crispy_field}}
+	   	</div>
+	   	<div class="col-2">
+			<button class="btn btn-outline-primary">Search</button>
+	   	</div>
+	</div>
+</form>
+    <ul class="nav nav-pills">
+        <li class="nav-item active mr-4"><a data-toggle="tab" href="#home">People</a></li>
+        <li class="nav-item mr-4"><a data-toggle="tab" href="#activities">Activities</a></li>
+        <li class="nav-item mr-4"><a data-toggle="tab" href="#categories">Categories</a></li>
+    </ul>
+
+    {% if q %}
+	    <div class="tab-content">
+	    	<div id="menu1" class="tab-pane fade show active">
+		    	{% if user_count == 0 %}
+		    		<h4 class="mt-4">{{q}} not found</h4>
+		    		{% else %}
+		    			{% for person , friend in users %}
+		    				<div class="media mb-2 mt-4">
+				    			{% person person %}
+			    				{% if person != user %}
+				    				<div class="col-3">
+				    					<form method="POST" action="{% if friend %}{% url 'relationship:unfollow_user' person.username %} {% else %} {% url 'relationship:follow_user' person.username %} {% endif %}">
+				    						{% csrf_token %}
+				    				    	<button class="btn btn-outline-primary">{% if friend %}Unfollow{% else %}Follow{% endif %}</button>
+				                        </form>
+				    				</div>
+			    				{% endif %}
+			    			</div> 	
+			    			<hr>		
+			    		{% endfor %}
+		    	{% endif %}
+		    </div>
+
+		    <div id="newusers" class="tab-pane fade">
+            <p>.......................</p>
+            </div>
+            <div id="topusers" class="tab-pane fade">
+            <p>Top users here....</p>
+            </div>
+	    </div>
+	{% endif %}
+	<p class="info mt-4">Can't find who you are looking for ?  Check out the <a href="{% url 'relationship:user-list' %}">list of newest users</a> to see if you know anyone there.</p>
+{% endblock content %}

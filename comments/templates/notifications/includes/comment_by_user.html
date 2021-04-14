@@ -1,0 +1,10 @@
+<div class="content-section">
+	<div class="media">
+		<img class="rounded-circle notification-img" src="{{ notification.actor.profile.image.url }}" >
+		<div class="media-body">
+			<a href="{% url 'post:user-posts' notification.actor %}"><b>{{ notification.actor }}</a> {{notification.verb }}</b> : {{ notification.obj.content | truncatewords:40 }} <a href="{% url 'post:post-detail' notification.actor notification.obj.id %}"></a>
+			<br>
+			<span class="text-muted">{{ notification.created|timesince }} ago</span>
+		</div>
+	</div>
+</div>

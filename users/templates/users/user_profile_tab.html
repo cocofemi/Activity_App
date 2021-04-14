@@ -1,0 +1,38 @@
+<div class="text-center col-md-8 col-lg-7 ">
+			<div class="card card-img-top" style="width: 15rem;">
+				<img src="{{ user_profile.profile.image.url }}" class="card-img-top" alt="...">
+			</div>
+			<div class="card-body">
+			    <h5 class="card-title">@{{ user_profile.username}}</h5>
+			    <h6 class="card-text text-muted">{{ user_profile.profile.first_name | title}} {{ user_profile.profile.last_name | title }}</h6>
+			    <p class="card-text">{{ user_profile.profile.bio }}</p>
+			    <p class="card-text">{{ user_profile.profile.location | upper}}</p>
+			    {% block followbutton %} {% endblock followbutton %}
+			</div>
+			<div id="top_nav">
+			<ul class="nav justify-content-center profile-tabs">
+				<li class="nav-item">
+				    <h6><a class="nav-link active" href="{% url 'post:user-posts' user_profile.username %}"> ({{ posts_count }}) <BR> <span class="text-muted">Posts</span></a></h6>
+				</li>
+				<li class="nav-item">
+					<h6><a class="nav-link ml-lg-4" href="{% url 'activity:activity-list' user_profile.username %}">({{ activities_count }}) <BR> <span class="text-muted">Activity </span></a></h6>
+				</li>
+				<li class="nav-item">
+					<h6><a class="nav-link ml-lg-4" href="{% url 'relationship:following-list' user_profile.username %}"> ({{ following_count }}) <BR> <span class="text-muted"> Following </span></a></h6>
+				</li>
+				<li class="nav-item">
+					<h6><a class="nav-link ml-lg-4" href="{% url 'relationship:followers-list' user_profile.username %}" tabindex="-1" aria-disabled="true"> ({{ followers_count }}) <BR> <span class="text-muted"> Followers </span> </a></h6>
+				</li>
+			</ul>
+			 </div>
+			{% if user == user_profile %}
+				<ul class="nav justify-content-center">
+					<li class="nav-item">
+						<a class="nav-link" href="{% url 'post:favorites_list' user_profile.username %}">Favorite</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="{% url 'activity:bookmark-list' %}">Bookmarks</a>
+					</li>
+				</ul>
+			{% endif %}
+		</div>

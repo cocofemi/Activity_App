@@ -1,0 +1,51 @@
+
+.navbar {
+	width: 100%;
+	background: none !important;
+
+	@media(max-width:34em) {
+		background: white !important;
+	}
+
+	.navbar-toggler {
+		cursor: pointer;
+		outline: 0;
+	}
+
+	.nav-link {
+		text-transform: uppercase;
+		font-weight: bold;
+	}
+
+	.nav-item {
+		padding: 0 1em;
+
+		@media(max-width:34em) {
+		padding: 0;
+	}
+		.nav-link {
+			@media(max-width:34em) {
+				font-weight: normal;
+				color: #fff !important
+			}
+		}
+
+	}
+}
+
+.main-text {
+	font-weight: bold;
+	font-size: 3.5em;
+	color: #1A1B1D
+}
+
+.text-color {
+	color: #1A1B1D
+}
+
+.activity-icon {
+	margin-left: 320px;
+}
+
+
+@import './bootstrap/scss/bootstrap';
